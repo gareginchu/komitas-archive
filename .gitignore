@@ -1,0 +1,20 @@
+# Node
+node_modules/
+package-lock.json
+
+# .NET / Fable
+bin/
+obj/
+output/
+*.fs.js
+*.fs.js.map
+
+# Vite
+dist/
+.vite/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

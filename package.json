@@ -1,0 +1,21 @@
+{
+  "name": "komitas-archive",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "description": "Komitas — The Reading Room. Digital archive around Komitas Vardapet (1869–1935).",
+  "scripts": {
+    "start": "dotnet fable watch src -o output --run vite",
+    "build": "dotnet fable src -o output && vite build",
+    "preview": "vite preview",
+    "clean": "rimraf output dist"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "vite": "^5.4.11",
+    "rimraf": "^5.0.10"
+  }
+}

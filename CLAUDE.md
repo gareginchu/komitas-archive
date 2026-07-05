@@ -211,14 +211,20 @@ Every AI-touched output is logged in `src/data/ai-manifest.yml` in the same comm
 
 ## 8. Technology
 
-### 8.1 Stack (decision pending)
+### 8.1 Stack (locked)
 
-The user has asked for **Fable 5** (F# → JavaScript). Blocked: no .NET SDK on the current machine. Two paths:
+**Fable 4.24.0** + **Feliz** (React DSL) + **Vite** + **React 18**.
 
-- **Fable path.** Fable 5 + Feliz (React DSL) + Vite. F# for logic and content transforms; Feliz for view components; Vite for bundling; static export via `vite build`. Requires .NET 8 SDK installed and `dotnet tool restore`.
-- **Fallback path.** Astro (SSG) + hand-written CSS. Static export, tiny JS budget, first-class content collections in Markdown/YAML.
+F# for logic and content transforms; Feliz for view components; Vite for bundling; static export via `vite build`.
 
-Whichever wins, the design tokens in §4 are stack-independent and are the source of truth.
+Fable 5 was requested first but is broken upstream on this machine: its NuGet package is missing `DotnetToolSettings.xml`, which blocks `dotnet tool install` on both .NET 8.0.422 and 9.0.315 SDKs and survives a full NuGet cache clear. Fable 4.24.0 installs cleanly and produces functionally equivalent output for a static content site. Upgrade to Fable 5 when the upstream package is fixed.
+
+Required tooling on this machine:
+- .NET 9 SDK 9.0.315 (installed).
+- Node 22.19.0, npm 10.9.3 (installed).
+- Fable is a local `dotnet` tool, restored via `dotnet tool restore` after clone.
+
+Design tokens in §4 are stack-independent and are the source of truth.
 
 ### 8.2 Repository layout (target)
 
