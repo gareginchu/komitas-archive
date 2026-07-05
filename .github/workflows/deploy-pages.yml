@@ -37,9 +37,20 @@ jobs:
 
       - name: Install npm dependencies
         run: npm install --no-audit --no-fund
+        timeout-minutes: 3
 
-      - name: Build (Fable + Vite)
-        run: npm run build
+      - name: Restore F# project (warm NuGet cache)
+        working-directory: src
+        run: dotnet restore --nologo
+        timeout-minutes: 4
+
+      - name: Compile F# -> JS (Fable)
+        run: dotnet fable src -o output --noCache
+        timeout-minutes: 5
+
+      - name: Bundle with Vite
+        run: npx vite build
+        timeout-minutes: 3
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
