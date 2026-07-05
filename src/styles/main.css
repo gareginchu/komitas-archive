@@ -1,167 +1,327 @@
 /* ─────────────────────────────────────────────────────────────
- * Komitas — The Reading Room
- * See CLAUDE.md §4 for the authoritative design system.
+ * Komitas — The Tree
+ * Landing room reinterpreting the original CD-ROM composition.
+ * See CLAUDE.md §4 (design tokens) and §6.1 (Threshold spec).
  * ────────────────────────────────────────────────────────── */
 
-/* Fonts — self-hosted WOFF2 pending. Google fallback for scaffold only.
- * Replace with self-hosted before Phase 1 launch. */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Noto+Serif+Armenian:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Noto+Serif+Armenian:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 /* ── Tokens ────────────────────────────────────────────────── */
 :root {
-  --bone: #F1EAD8;
-  --bone-shade: #E4DAC0;
-  --ink: #17130D;
-  --ink-2: #4E4638;
-  --rule: #C7B891;
-  --candle: #B8892A;
-  --linen: #F7F1E2;
+  /* Night-blue for the canopy scene, warm ochre for the highlight. */
+  --night-1: #6892B4;
+  --night-2: #3D6A8E;
+  --night-3: #1F3F5F;
+  --canopy: #56C930;
+  --canopy-lit: #F1B22F;
+  --canopy-lit-2: #E36B12;
+  --branch: #0A0A0A;
+  --earth: #6B4127;
+  --earth-2: #4F2E1B;
+  --ivory: #F1EAD8;
+  --ivory-2: #E4DAC0;
+  --robe: #303038;
+  --robe-skin: #C6A480;
+  --book: #E4DAC0;
 
   --font-display: 'Cormorant Garamond', 'Noto Serif Armenian', Georgia, serif;
-  --font-body: 'Source Serif 4', 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Cormorant Garamond', 'Noto Serif Armenian', Georgia, serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --measure: 66ch;
-  --content-max: 1200px;
   --unit: 8px;
-
-  --step-1: 0.875rem;
-  --step-0: 1rem;
-  --step-1x: 1.1875rem;
-  --step-2: 1.5rem;
-  --step-3: 2.25rem;
-  --step-4: 3.5rem;
-  --step-5: 5rem;
-  --step-6: 7rem;
 }
 
 /* ── Reset ─────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; height: 100%; }
 body {
   margin: 0;
   min-height: 100vh;
-  background-color: var(--bone);
-  color: var(--ink);
+  background:
+    radial-gradient(ellipse at center, var(--night-1) 0%, var(--night-2) 45%, var(--night-3) 100%);
+  color: var(--ivory);
   font-family: var(--font-body);
-  font-size: var(--step-1x);
-  line-height: 1.65;
   font-feature-settings: "onum" 1, "kern" 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
-img, svg, video { max-width: 100%; height: auto; display: block; }
-a { color: var(--candle); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 200ms ease; }
-a:hover { border-bottom-color: var(--candle); }
-a:focus-visible {
-  outline: 2px solid var(--candle);
-  outline-offset: 3px;
-  border-radius: 2px;
+button {
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+a { color: inherit; text-decoration: none; }
+
+/* ── The threshold grid ────────────────────────────────────── */
+.threshold {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 0;
+  padding: 0;
 }
 
-/* ── Layout ────────────────────────────────────────────────── */
-main {
-  max-width: var(--content-max);
-  margin: 0 auto;
-  padding: calc(var(--unit) * 12) calc(var(--unit) * 4) calc(var(--unit) * 16);
+/* ── The tree stage ────────────────────────────────────────── */
+.tree-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: calc(var(--unit) * 3);
   min-height: 100vh;
+}
+.tree-svg {
+  width: 100%;
+  height: auto;
+  max-height: 92vh;
+  display: block;
+  overflow: visible;
+}
+
+/* Canopy leaves — five hover regions. */
+.leaf {
+  fill: var(--canopy);
+  transition: fill 240ms ease, filter 240ms ease;
+}
+
+/* Branches — thick dark lines. */
+.branches path {
+  fill: none;
+  stroke: var(--branch);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Earth ground. */
+.earth {
+  fill: var(--earth);
+  stroke: var(--earth-2);
+  stroke-width: 1;
+}
+
+/* Root text — wavy strokes inside the earth. */
+.root-text path {
+  fill: none;
+  stroke: var(--branch);
+  stroke-width: 8;
+  stroke-linecap: round;
+}
+
+/* Komitas figure. */
+.komitas .robe { fill: var(--robe); }
+.komitas .head { fill: var(--robe-skin); }
+.komitas .book { fill: var(--book); stroke: var(--branch); stroke-width: 2; }
+
+/* Canopy labels — SVG text. */
+.canopy-label {
+  fill: var(--branch);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 26px;
+  letter-spacing: 3px;
+  cursor: pointer;
+  transition: fill 200ms ease;
+}
+.canopy-label:hover {
+  fill: var(--canopy-lit-2);
+}
+
+/* ── Right column ──────────────────────────────────────────── */
+.right-column {
   display: flex;
   flex-direction: column;
-  gap: calc(var(--unit) * 10);
+  padding: calc(var(--unit) * 4);
+  gap: calc(var(--unit) * 4);
+  position: relative;
+  min-height: 100vh;
 }
 
-/* ── Threshold room ────────────────────────────────────────── */
-.threshold-plate {
-  text-align: center;
-  padding: calc(var(--unit) * 6) 0 calc(var(--unit) * 4);
-  border-bottom: 1px solid var(--rule);
-}
-.threshold-eyebrow {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 5vw, 3.25rem);
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  margin: 0 0 calc(var(--unit) * 2);
-  line-height: 1.1;
-}
-.threshold-eyebrow-latin {
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  color: var(--ink-2);
-  margin: 0;
-}
-
-.threshold-thesis {
-  text-align: center;
-  padding: calc(var(--unit) * 6) 0;
+.signature {
   display: flex;
   flex-direction: column;
   gap: calc(var(--unit) * 2);
+  padding-bottom: calc(var(--unit) * 3);
+  border-bottom: 1px solid rgba(241, 234, 216, 0.18);
 }
-.threshold-line {
+.signature-name p {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.28em;
+  line-height: 1.9;
+  color: var(--ivory);
+  text-transform: uppercase;
+  text-align: right;
+}
+.signature-mark {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 8px;
+}
+.sig-svg { width: 220px; height: 54px; }
+.sig-svg path {
+  fill: none;
+  stroke: var(--ivory);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.9;
+}
+
+/* ── Submenu blocks ─────────────────────────────────────────── */
+.submenu {
+  flex: 1;
+  position: relative;
+  min-height: 380px;
+}
+.submenu-block {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 240ms ease, transform 240ms ease;
+  pointer-events: none;
+}
+.submenu-title {
   font-family: var(--font-display);
   font-style: italic;
   font-weight: 400;
-  font-size: clamp(1.5rem, 3.5vw, 2.25rem);
-  line-height: 1.35;
-  color: var(--ink);
+  font-size: 1.75rem;
+  color: var(--ivory);
+  margin: 0 0 calc(var(--unit) * 2);
+  letter-spacing: 0.04em;
+}
+.submenu-list {
+  list-style: none;
+  padding: 0;
   margin: 0;
-}
-.threshold-line.hy { color: var(--ink); }
-.threshold-line.en { color: var(--ink-2); font-size: clamp(1.25rem, 2.6vw, 1.75rem); }
-.threshold-line.ru { color: var(--ink-2); font-size: clamp(1.125rem, 2.2vw, 1.5rem); }
-
-.threshold-frame {
-  max-width: var(--measure);
-  margin: 0 auto;
-}
-.threshold-frame p {
-  font-size: var(--step-1x);
-  line-height: 1.7;
-  color: var(--ink-2);
-  margin: 0;
-}
-
-.threshold-nav {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: calc(var(--unit) * 1.5);
-  padding-top: calc(var(--unit) * 6);
-  border-top: 1px solid var(--rule);
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
+  flex-direction: column;
+  gap: calc(var(--unit) * 1);
+}
+.submenu-list li {
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  letter-spacing: 0.06em;
+  color: var(--ivory-2);
   text-transform: uppercase;
-  letter-spacing: 0.14em;
+  padding: 4px 0;
+  border-bottom: 1px solid transparent;
+  transition: color 200ms ease, border-color 200ms ease;
+  cursor: pointer;
 }
-.threshold-nav a {
-  color: var(--ink);
-  border: none;
-}
-.threshold-nav a:hover {
-  color: var(--candle);
-}
-.threshold-nav .sep {
-  color: var(--rule);
+.submenu-list li:hover {
+  color: var(--canopy-lit-2);
+  border-bottom-color: rgba(227, 107, 18, 0.4);
 }
 
-.site-foot {
-  margin-top: auto;
-  padding-top: calc(var(--unit) * 8);
-  border-top: 1px solid var(--rule);
+/* Controls */
+.controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: calc(var(--unit) * 2);
+  padding-top: calc(var(--unit) * 2);
+}
+.ctrl {
+  color: var(--ivory);
+  font-size: 1rem;
+  padding: 4px 8px;
+  opacity: 0.7;
+  transition: opacity 200ms ease;
+}
+.ctrl:hover { opacity: 1; }
+
+/* ── Language switch (bottom left) ─────────────────────────── */
+.lang-switch {
+  position: fixed;
+  left: calc(var(--unit) * 4);
+  bottom: calc(var(--unit) * 4);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--unit) * 0.5);
   font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--ink-2);
-  text-align: center;
-  letter-spacing: 0.08em;
+  z-index: 10;
+}
+.lang-btn {
+  color: var(--ivory);
+  font-size: 0.7rem;
+  letter-spacing: 0.32em;
+  opacity: 0.7;
+  padding: 2px 0;
+  transition: opacity 200ms ease;
+  text-align: left;
+}
+.lang-btn:hover, .lang-btn.active { opacity: 1; }
+
+/* ── Interactive coupling: label hover → leaf lights + submenu opens ─── */
+/* Using CSS :has() on the .threshold ancestor so hovering a label in the
+   left column can drive both the SVG leaf and the right-column submenu. */
+
+.threshold:has(.label-audio:hover) .leaf-audio,
+.threshold:has(.leaf-audio:hover) .leaf-audio {
+  fill: var(--canopy-lit);
+  filter: drop-shadow(0 0 12px rgba(241, 178, 47, 0.55));
+}
+.threshold:has(.label-video:hover) .leaf-video,
+.threshold:has(.leaf-video:hover) .leaf-video {
+  fill: var(--canopy-lit);
+  filter: drop-shadow(0 0 12px rgba(241, 178, 47, 0.55));
+}
+.threshold:has(.label-photos:hover) .leaf-photos,
+.threshold:has(.leaf-photos:hover) .leaf-photos {
+  fill: var(--canopy-lit);
+  filter: drop-shadow(0 0 12px rgba(241, 178, 47, 0.55));
+}
+.threshold:has(.label-texts:hover) .leaf-texts,
+.threshold:has(.leaf-texts:hover) .leaf-texts {
+  fill: var(--canopy-lit);
+  filter: drop-shadow(0 0 12px rgba(241, 178, 47, 0.55));
+}
+.threshold:has(.label-chronology:hover) .leaf-chronology,
+.threshold:has(.leaf-chronology:hover) .leaf-chronology {
+  fill: var(--canopy-lit);
+  filter: drop-shadow(0 0 12px rgba(241, 178, 47, 0.55));
 }
 
-/* ── Reduced motion ─────────────────────────────────────────── */
+.threshold:has(.label-audio:hover)      .submenu-audio,
+.threshold:has(.leaf-audio:hover)            .submenu-audio,
+.threshold:has(.label-video:hover)      .submenu-video,
+.threshold:has(.leaf-video:hover)            .submenu-video,
+.threshold:has(.label-photos:hover)     .submenu-photos,
+.threshold:has(.leaf-photos:hover)           .submenu-photos,
+.threshold:has(.label-texts:hover)      .submenu-texts,
+.threshold:has(.leaf-texts:hover)            .submenu-texts,
+.threshold:has(.label-chronology:hover) .submenu-chronology,
+.threshold:has(.leaf-chronology:hover)       .submenu-chronology {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* ── Reduced motion ────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ── Narrower viewports (stack, no side column) ────────────── */
+@media (max-width: 900px) {
+  body { overflow-y: auto; }
+  .threshold {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+  }
+  .tree-stage { min-height: 60vh; }
+  .right-column {
+    min-height: 0;
+    padding-bottom: calc(var(--unit) * 12);
+  }
+  .lang-switch { position: static; padding: calc(var(--unit) * 2) calc(var(--unit) * 4); }
+  .submenu-block { position: static; opacity: 1; transform: none; margin-bottom: calc(var(--unit) * 3); pointer-events: auto; }
 }
